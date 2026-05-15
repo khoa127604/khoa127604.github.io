@@ -1,0 +1,782 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nami Gaming Shop</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050612;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-strong: rgba(255, 255, 255, 0.1);
+      --text: #f4f7ff;
+      --muted: rgba(245, 249, 255, 0.72);
+      --accent: #ff3a50;
+      --accent-soft: rgba(255, 58, 80, 0.16);
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(255, 58, 80, 0.18), transparent 18%),
+        radial-gradient(circle at bottom right, rgba(0, 196, 255, 0.12), transparent 18%),
+        linear-gradient(180deg, #070b16 0%, #050612 35%, #060814 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background: radial-gradient(circle at 20% 20%, rgba(255, 58, 80, 0.18), transparent 16%);
+    }
+
+    body::after {
+      background: radial-gradient(circle at 80% 15%, rgba(0, 196, 255, 0.15), transparent 16%);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: min(1280px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #ffffff;
+      font-size: 1rem;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 18px 38px rgba(255, 75, 97, 0.15);
+      overflow: hidden;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .nav-links a {
+      color: rgba(245, 249, 255, 0.78);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    .header .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 260px;
+    }
+
+    .search {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 14px 18px 14px 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: #f4f7ff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .search input::placeholder {
+      color: rgba(245, 249, 255, 0.58);
+    }
+
+    .search::before {
+      content: "🔍";
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(245, 249, 255, 0.76);
+      font-size: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff3a50 0%, #ff9053 100%);
+      color: #111827;
+      box-shadow: 0 22px 40px rgba(255, 58, 80, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f4f7ff;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .category-menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .category-menu a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(245, 249, 255, 0.82);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .category-menu a:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.03fr 0.97fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 44px;
+    }
+
+    .hero-text h1 {
+      margin: 0 0 18px;
+      font-size: clamp(3rem, 5vw, 4.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 680px;
+      color: #ffffff;
+    }
+
+    .hero-text p {
+      margin: 0 0 28px;
+      color: rgba(245, 249, 255, 0.82);
+      font-size: 1.05rem;
+      line-height: 1.75;
+      max-width: 620px;
+    }
+
+    .hero-image {
+      position: relative;
+      min-height: 520px;
+      border-radius: 35px;
+      background: linear-gradient(180deg, rgba(6, 8, 20, 0.95), rgba(2, 4, 12, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-image::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 58, 80, 0.18), transparent 18%),
+        radial-gradient(circle at 80% 25%, rgba(0, 196, 255, 0.18), transparent 18%);
+      pointer-events: none;
+    }
+
+    .hero-panel {
+      position: absolute;
+      inset: 24px;
+      padding: 30px;
+      background: rgba(5, 10, 22, 0.8);
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 20px;
+      justify-content: start;
+      align-content: start;
+      z-index: 1;
+    }
+
+    .hero-panel .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255, 58, 80, 0.14);
+      color: #ffb2b2;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .hero-panel h2 {
+      margin: 0;
+      font-size: 1.9rem;
+      color: #ffffff;
+      line-height: 1.05;
+    }
+
+    .hero-panel p {
+      margin: 0;
+      color: rgba(245, 249, 255, 0.78);
+      line-height: 1.75;
+      max-width: 460px;
+    }
+
+    .hero-panel .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .hero-panel .stat {
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 18px 16px;
+    }
+
+    .hero-panel .stat strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.35rem;
+      color: #ffffff;
+    }
+
+    .hero-panel .stat span {
+      color: rgba(245, 249, 255, 0.78);
+      font-size: 0.95rem;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 1.75rem;
+      color: #ffffff;
+    }
+
+    .section-heading a {
+      color: #ff6f63;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .top-categories,
+    .best-sellers {
+      display: grid;
+      gap: 18px;
+    }
+
+    .top-categories {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 42px;
+    }
+
+    .category-card {
+      position: relative;
+      padding: 28px 24px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      min-height: 200px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .category-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .category-card::before {
+      content: "";
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      z-index: 0;
+    }
+
+    .category-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      color: #ffffff;
+      z-index: 1;
+    }
+
+    .category-card p {
+      margin: 0;
+      color: rgba(245, 249, 255, 0.74);
+      font-size: 0.95rem;
+      z-index: 1;
+    }
+
+    .promo-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      margin-bottom: 42px;
+    }
+
+    .promo-card {
+      position: relative;
+      padding: 30px;
+      border-radius: 28px;
+      min-height: 220px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .promo-card.primary {
+      background: linear-gradient(135deg, rgba(255, 58, 80, 0.96), rgba(255, 130, 68, 0.96));
+    }
+
+    .promo-card.secondary {
+      background: linear-gradient(135deg, rgba(10, 18, 48, 0.96), rgba(12, 20, 56, 0.96));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .promo-card small {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .promo-card h3 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.05;
+      color: #ffffff;
+      max-width: 70%;
+    }
+
+    .promo-card .price-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 700;
+    }
+
+    .promo-card .price-tag strong {
+      font-size: 1.75rem;
+    }
+
+    .products-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tab {
+      border-radius: 999px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(245, 249, 255, 0.85);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .tab.active,
+    .tab:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .best-sellers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .product-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 26px;
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-card .image {
+      min-height: 220px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(245, 249, 255, 0.78);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.88rem;
+    }
+
+    .product-card .image::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 58, 80, 0.18), transparent 18%),
+        radial-gradient(circle at 70% 60%, rgba(0, 196, 255, 0.16), transparent 20%);
+      pointer-events: none;
+    }
+
+    .product-card h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: #ffffff;
+    }
+
+    .product-card p {
+      margin: 0;
+      color: rgba(245, 249, 255, 0.72);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .product-card .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: rgba(245, 249, 255, 0.68);
+      font-size: 0.88rem;
+      flex-wrap: wrap;
+    }
+
+    .product-card .price {
+      margin: 0;
+      font-size: 1.32rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .product-card button {
+      width: 100%;
+      padding: 14px 0;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #ff3a50 0%, #ff9053 100%);
+      color: #111827;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .product-card button:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    @media (max-width: 1080px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .top-categories,
+      .best-sellers-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .promo-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      main {
+        width: min(100%, calc(100% - 32px));
+      }
+      .header,
+      .products-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-links {
+        justify-content: flex-start;
+      }
+      .hero-text h1 {
+        font-size: 2.8rem;
+      }
+      .hero-image {
+        min-height: 420px;
+      }
+      .top-categories,
+      .best-sellers-grid {
+        grid-template-columns: 1fr;
+      }
+      .category-menu,
+      .products-toolbar .tabs {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark"><img src="nami-logo.svg" alt="Nami Gaming logo" /></span>
+        Nami Gaming
+      </div>
+      <nav class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Shop</a>
+        <a href="#">Pages</a>
+        <a href="#">Blog</a>
+      </nav>
+      <div class="actions">
+        <div class="search">
+          <input type="search" placeholder="Tìm sản phẩm, linh kiện..." aria-label="Tìm kiếm sản phẩm" />
+        </div>
+        <button class="btn btn-secondary" type="button">Giỏ hàng</button>
+      </div>
+    </header>
+
+    <div class="category-menu">
+      <a href="#">Headsets</a>
+      <a href="#">Keyboards</a>
+      <a href="#">Mouse</a>
+      <a href="#">Gaming Controllers</a>
+      <a href="#">Monitors</a>
+      <a href="#">Microphones</a>
+      <a href="#">Power</a>
+      <a href="#">Accessories</a>
+      <a href="#">Sale</a>
+    </div>
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Tune up your game với linh kiện PC chất lượng</h1>
+        <p>Khám phá bộ sưu tập phần cứng gaming chính hãng, hiệu năng đỉnh cao và thiết kế ấn tượng cho mọi tựa game.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Mua ngay</a>
+          <a href="#" class="btn btn-secondary">Xem thêm</a>
+        </div>
+      </div>
+
+      <div class="hero-image">
+        <div class="hero-panel">
+          <span class="eyebrow">Top seller</span>
+          <h2>XLITE X6 GAMING KEYBOARD</h2>
+          <p>Bàn phím RGB full-size dành cho game thủ, thiết kế góc cạnh và ánh sáng độc đáo giúp bạn tỏa sáng trên mọi trận đấu.</p>
+          <div class="stats">
+            <div class="stat">
+              <strong>$599.99</strong>
+              <span>Giá tốt nhất</span>
+            </div>
+            <div class="stat">
+              <strong>200+</strong>
+              <span>Sản phẩm gaming</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-heading">
+        <h2>Top Categories</h2>
+        <a href="#">View More</a>
+      </div>
+      <div class="top-categories">
+        <div class="category-card">
+          <h3>Gaming Controllers</h3>
+          <p>17 products</p>
+        </div>
+        <div class="category-card">
+          <h3>Gaming Mouse</h3>
+          <p>18 products</p>
+        </div>
+        <div class="category-card">
+          <h3>Gaming Chairs</h3>
+          <p>4 products</p>
+        </div>
+        <div class="category-card">
+          <h3>Gaming Headsets</h3>
+          <p>22 products</p>
+        </div>
+        <div class="category-card">
+          <h3>Keyboards</h3>
+          <p>9 products</p>
+        </div>
+        <div class="category-card">
+          <h3>Accessories</h3>
+          <p>27 products</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="promo-row">
+      <div class="promo-card primary">
+        <small>THE ULTIMATE PLAY</small>
+        <h3>GeForce RTX 3060 Ti</h3>
+        <div class="price-tag"><strong>$599.99</strong><span>Shop Now</span></div>
+      </div>
+      <div class="promo-card secondary">
+        <small>POWER TO THE CORE</small>
+        <h3>AORUS ELITE AX AM5</h3>
+        <div class="price-tag"><strong>$199.99</strong><span>Shop Now</span></div>
+      </div>
+    </section>
+
+    <section class="best-sellers">
+      <div class="products-toolbar">
+        <h2>Best Sellers</h2>
+        <div class="tabs">
+          <button class="tab active" type="button">CPU</button>
+          <button class="tab" type="button">Graphics Cards</button>
+          <button class="tab" type="button">Memory</button>
+          <button class="tab" type="button">Monitors</button>
+        </div>
+      </div>
+      <div class="best-sellers-grid">
+        <div class="product-card">
+          <div class="image">Headset</div>
+          <h3>Gaming Headset</h3>
+          <p>Âm thanh 7.1, mic chống ồn, thiết kế đệm êm cho mọi phiên chơi dài.</p>
+          <div class="meta"><span>Best seller</span><span>25 in stock</span></div>
+          <p class="price">$129.99</p>
+          <button type="button">Mua ngay</button>
+        </div>
+        <div class="product-card">
+          <div class="image">Keyboard</div>
+          <h3>Mechanical Keyboard</h3>
+          <p>Switch cơ học bền bỉ, RGB tùy chỉnh, cảm giác gõ mượt mà cho mọi trận chiến.</p>
+          <div class="meta"><span>Top rated</span><span>18 in stock</span></div>
+          <p class="price">$99.99</p>
+          <button type="button">Mua ngay</button>
+        </div>
+        <div class="product-card">
+          <div class="image">Controller</div>
+          <h3>Game Controller</h3>
+          <p>Độ trễ thấp, thiết kế ergonomic, tương thích PC và console cho trải nghiệm tiện lợi.</p>
+          <div class="meta"><span>Hot item</span><span>30 in stock</span></div>
+          <p class="price">$74.99</p>
+          <button type="button">Mua ngay</button>
+        </div>
+        <div class="product-card">
+          <div class="image">Chair</div>
+          <h3>Gaming Chair</h3>
+          <p>Ghế êm ái, hỗ trợ lưng tốt, phong cách đậm chất gamer với đường chỉ nổi bật.</p>
+          <div class="meta"><span>Comfort gear</span><span>12 in stock</span></div>
+          <p class="price">$219.99</p>
+          <button type="button">Mua ngay</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
